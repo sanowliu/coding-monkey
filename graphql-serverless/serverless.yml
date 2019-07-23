@@ -1,0 +1,55 @@
+# serverless.yml
+service: graphql-api
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+functions:
+  query:
+    handler: handler.query
+    events:
+      - http:
+          path: query
+          method: get
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["UsersDynamoDBTable", "Arn" ] }
+  environment:
+    USERS_TABLE: ${self:custom.tableName}
+  
+resources:
+  Resources:
+    UsersDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: firstName
+            AttributeType: S
+        KeySchema:
+          - AttributeName: firstName
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}
+
+custom:
+  tableName: 'users-nickname-${self:provider.stage}'
+  dynamodb:
+    start:
+      migrate: true
