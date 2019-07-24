@@ -6,12 +6,11 @@ plugins:
   - serverless-offline
 
 functions:
-  query:
-    handler: handler.query
+  app:
+    handler: handler.handler
     events:
-      - http:
-          path: query
-          method: get
+      - http: ANY /
+      - http: 'ANY {proxy+}'
 
 provider:
   name: aws

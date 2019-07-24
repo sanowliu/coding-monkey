@@ -5,9 +5,11 @@ const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLNonNull
-} = require('graphql')
+} = require('graphql');
+const express = require('express');
 
 const AWS = require('aws-sdk');
+const graphqlHTTP = require('express-graphql');
 const IS_OFFLINE = process.env.IS_OFFLINE;
 const dynamoDbConfig = {};
 if (IS_OFFLINE) {
@@ -17,7 +19,6 @@ if (IS_OFFLINE) {
 	});
 }
 
-console.log(dynamoDbConfig);
 const dynamoDb =  new AWS.DynamoDB.DocumentClient(dynamoDbConfig);
 
 const promisify = getUser => new Promise((resolve, reject) => {
@@ -71,7 +72,7 @@ const schema = new GraphQLSchema({
         type: GraphQLString,
         // resolve to a greeting message
         resolve: (parent, args) => getGreeting(args.firstName)
-      }
+	  }
     }
   }),
   mutation: new GraphQLObjectType({
@@ -91,10 +92,14 @@ const schema = new GraphQLSchema({
   })
 })
 
-// We want to make a GET request with ?query=<graphql query>
-// The event properties are specific to AWS. Other providers will differ.
-module.exports.query = (event, context, callback) => graphql(schema, event.queryStringParameters.query)
-  .then(
-    result => callback(null, {statusCode: 200, body: JSON.stringify(result)}),
-    err => callback(err)
-  )
+const app = express();
+app.use('/graphql', graphqlHTTP({
+	schema: schema,
+	graphiql: true,
+}));
+app.listen(3000);
+
+console.log('Running a GraphQL API server at localhost:3000/graphql');
+
+module.exports.handler = serverless(app);
+

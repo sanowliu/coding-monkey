@@ -9,14 +9,17 @@ Start serverless graphql with local dynamodb and have fun
 ### Examples
 Post a nick name for a user
 
-`curl -G 'http://localhost:3000/query' --data-urlencode 'query=mutation {changeNickname(firstName:"Jeremy", nickname: "Jer")}'`
+`curl -G 'http://localhost:3000/graphql' --data-urlencode 'query=mutation {changeNickname(firstName:"Jeremy", nickname: "Jer")}'`
 
 Read nick name for an existing user 
-`curl -G 'http://localhost:3000/query' --data-urlencode 'query={greeting(firstName: "Jeremy")}'`
+`curl -G 'http://localhost:3000/graphql' --data-urlencode 'query={greeting(firstName: "Jeremy")}'`
 
 Read nick name for a non-existing user 
-`curl -G 'http://localhost:3000/query' --data-urlencode 'query={greeting(firstName: "Mike")}'`
+`curl -G 'http://localhost:3000/graphql' --data-urlencode 'query={greeting(firstName: "Mike")}'`
 
+### Use GraphiQL tool through your browser
+
+`http://localhost:3000/graphql` 
 This example is derived from 
 [Deploy a REST API using Serverless, Express and Node.js](https://serverless.com/blog/serverless-express-rest-api/ "Deploy a REST API using Serverless, Express and Node.js") 
 and 
