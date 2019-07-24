@@ -20,6 +20,7 @@ Read nick name for a non-existing user
 ### Use GraphiQL tool through your browser
 
 `http://localhost:3000/graphql` 
+
 This example is derived from 
 [Deploy a REST API using Serverless, Express and Node.js](https://serverless.com/blog/serverless-express-rest-api/ "Deploy a REST API using Serverless, Express and Node.js") 
 and 
